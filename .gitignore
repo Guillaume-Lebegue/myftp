@@ -1,0 +1,9 @@
+a.out
+unit_tests
+*.o
+*.a
+*.gc*
+*.json
+vgc*
+.vscode
+*~
