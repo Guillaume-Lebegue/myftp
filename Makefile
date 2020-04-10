@@ -5,7 +5,12 @@
 ## Makefile
 ##
 
-SRC	=	src/main.c
+SRC	=	src/main.c				\
+		src/base_server.c		\
+		src/list_socket_utils.c	\
+		src/socket_utils.c		\
+		src/server_utils.c		\
+		src/new_connect.c
 
 OBJ	=	$(SRC:.c=.o)
 
