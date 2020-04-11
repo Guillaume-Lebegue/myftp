@@ -10,7 +10,9 @@ SRC	=	src/main.c				\
 		src/list_socket_utils.c	\
 		src/socket_utils.c		\
 		src/server_utils.c		\
-		src/new_connect.c
+		src/new_connect.c		\
+		src/new_message.c		\
+		src/catch_stop.c
 
 OBJ	=	$(SRC:.c=.o)
 
@@ -18,7 +20,7 @@ HEADER_PATH	=	include/
 
 CC	=	@gcc
 
-CFLAGS	=	-I $(HEADER_PATH) -Wall -Werror
+CFLAGS	=	-I $(HEADER_PATH) -Wall -Werror -g3
 
 NAME	=	myftp
 

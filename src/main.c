@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 #include "myftp.h"
+#include "ftp_message.h"
 
 void help(void)
 {
@@ -38,7 +39,7 @@ int check_given_path(char *path)
     }
     if (S_ISDIR(statbuf.st_mode))
         return (SUCCESS);
-    fprintf(stderr, "Given default path: Not a directory\n");
+    fputs(ERROR_PARAM_DIR, stderr);
     return (FAILURE);
 }
 
@@ -48,7 +49,7 @@ int get_port(short *port, char *given_port)
 
     *port = (short) strtol(given_port, &endptr, 10);
     if (endptr[0] != '\0') {
-        fprintf(stderr, "Given port: input isn't a number\n");
+        fputs(ERROR_PARAM_PORT_NUM, stderr);
         return FAILURE;
     }
     return SUCCESS;

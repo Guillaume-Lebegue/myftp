@@ -8,3 +8,5 @@ vgc*
 .vscode
 *~
 myftp
+test_client.c
+test_client
