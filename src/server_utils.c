@@ -10,6 +10,8 @@
 #include <sys/select.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
+#include <string.h>
+#include <unistd.h>
 #include "myftp.h"
 #include "ftp_message.h"
 
@@ -68,4 +70,19 @@ void do_disconnect(server_t *server, list_socket_t *deco_sock)
     server_log(str);
     if (delete_in_list_socket(&server->list_socket, deco_sock) == FAILURE)
         fputs(ERROR_SOCKET_NOTFOUND, stderr);
+}
+
+int send_message(list_socket_t *socket, const int code, const char *msg)
+{
+    char *res;
+    int len = 3 + strlen(msg);
+
+    for (int i = 1; code / i; i *= 10, len++);
+    res = malloc(sizeof(char) * len);
+    if (!res)
+        return (FAILURE);
+    sprintf(res, "%d %s\n", code, msg);
+    write(socket->fd, res, len);
+    free(res);
+    return (SUCCESS);
 }

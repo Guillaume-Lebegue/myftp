@@ -9,6 +9,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include "myftp.h"
+#include "ftp_message.h"
 
 static int do_accept(list_socket_t *to_accept, char **address)
 {
@@ -39,7 +40,7 @@ int new_connect(server_t *server, list_socket_t *ssocket)
         return (FAILURE);
     }
     new->address = address;
-    new->dirr_path = server->default_path;
     add_in_list_socket(&server->list_socket, new);
+    send_message(new, 220, WELCOME_MESSAGE);
     return (SUCCESS);
 }

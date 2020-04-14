@@ -12,9 +12,11 @@
 
 static int init_server(short port, char *d_path, server_t *server, int *stop)
 {
-    server->default_path = d_path;
+    server->users = malloc(sizeof(user_t *) * 2);
+    server->users[0] = create_user("anonymous", "", d_path, USER);
+    server->users[1] = NULL;
     server->list_socket = create_node_socket(start_socket(), SERVER);
-    if (server->list_socket->fd == (-FAILURE) ||
+    if (server->list_socket->fd == (-FAILURE) || !server->users[0] ||
             bind_socket_tcp(server->list_socket->fd, port) == FAILURE ||
             start_listen(server->list_socket->fd) == FAILURE ||
             setup_catcher(stop)) {
@@ -29,6 +31,7 @@ static void close_server(server_t *server)
 {
     server_log(INFO_SERVER_CLOSE);
     delete_list_socket(&server->list_socket);
+    free_list_user(server->users);
 }
 
 static int run_update(server_t *server, list_socket_t *actu)
@@ -57,14 +60,17 @@ static void do_update(server_t *server, fd_set *updated)
     }
 }
 
-int start_server(short port, char *default_path)
+int start_server(short port, char *d_path)
 {
     server_t server;
     fd_set rfds;
     int max_fd = 0;
     int i = 1;
+    char *default_path = absolute_path(d_path);
 
-    if (init_server(port, default_path, &server, &i) == FAILURE)
+    printf("default_path: %s\n", default_path);
+    if (!default_path ||
+            init_server(port, default_path, &server, &i) == FAILURE)
         return (FAILURE);
     while (i) {
         max_fd = set_rfd_set(max_fd, &rfds, server.list_socket);
@@ -75,5 +81,6 @@ int start_server(short port, char *default_path)
         do_update(&server, &rfds);
     }
     close_server(&server);
+    free(default_path);
     return (SUCCESS);
 }

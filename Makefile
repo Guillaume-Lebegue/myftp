@@ -12,7 +12,17 @@ SRC	=	src/main.c				\
 		src/server_utils.c		\
 		src/new_connect.c		\
 		src/new_message.c		\
-		src/catch_stop.c
+		src/catch_stop.c		\
+		src/string_utils.c		\
+		src/string_utils2.c		\
+		src/users_utils.c		\
+		src/command_utils.c		\
+		src/command/user.c		\
+		src/command/syst.c		\
+		src/command/pass.c		\
+		src/command/pwd.c		\
+		src/command/cwd.c		\
+		src/command/cdup.c
 
 OBJ	=	$(SRC:.c=.o)
 
@@ -20,7 +30,7 @@ HEADER_PATH	=	include/
 
 CC	=	@gcc
 
-CFLAGS	=	-I $(HEADER_PATH) -Wall -Werror -g3
+CFLAGS	=	-I $(HEADER_PATH) -Wall -Werror
 
 NAME	=	myftp
 

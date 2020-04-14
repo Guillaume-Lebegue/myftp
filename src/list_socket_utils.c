@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #include "myftp.h"
 
 list_socket_t *create_node_socket(int fd, socket_type_t type)
@@ -16,16 +17,18 @@ list_socket_t *create_node_socket(int fd, socket_type_t type)
 
     if (!new || fd == (-FAILURE))
         return (NULL);
-    new->dirr_path = NULL;
+    new->dirr_path = strdup("/");
     new->address = NULL;
     new->fd = fd;
     new->fp = fdopen(fd, "r+");
-    if (!new->fp) {
+    if (!new->fp || !new->dirr_path) {
         perror("Create node socket");
         return NULL;
     }
     new->type = type;
     new->next = NULL;
+    new->user = NULL;
+    new->connected = false;
     return (new);
 }
 
@@ -50,6 +53,7 @@ static void free_one_socket(list_socket_t *sock)
     fclose(sock->fp);
     if (sock->address)
         free(sock->address);
+    free(sock->dirr_path);
     free(sock);
 }
 

@@ -8,6 +8,8 @@
 #ifndef FTP_MESSAGE_H_
 #define FTP_MESSAGE_H_
 
+static const char ERROR_MALLOC[] = "Error malloc failed";
+
 static const char ERROR_PARAM_DIR[] = "Given default path: Not a directory";
 static const char ERROR_PARAM_PORT_NUM[] = "Given port: input isn't a number";
 
@@ -22,5 +24,7 @@ static const char ERROR_MESSAGE[] = "Error with new message";
 
 static const char INFO_SERVER_LISTEN[] = "Server now listening";
 static const char INFO_SERVER_CLOSE[] = "Server now closing";
+
+static const char WELCOME_MESSAGE[] = "Welcome on myftp";
 
 #endif /* !FTP_MESSAGE_H_ */
