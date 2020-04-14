@@ -14,7 +14,7 @@
 
 static const int SUCCESS = 0;
 static const int FAILURE = 84;
-static const int DECONNECTION = -1;
+static const int DISCONECT = -1;
 
 static const int QUEUE_LENGTH = 10;
 

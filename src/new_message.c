@@ -34,7 +34,7 @@ int new_message(server_t *server, list_socket_t *msocket)
     }
     if (mess[0] == '\0') {
         do_disconnect(server, msocket);
-        ret = DECONNECTION;
+        ret = DISCONECT;
     } else
         ret = select_action(server, msocket, args);
     free(args);

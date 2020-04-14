@@ -2,9 +2,10 @@
 ** EPITECH PROJECT, 2020
 ** myftp
 ** File description:
-** cwd
+** dele
 */
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -36,12 +37,16 @@ static int check_exist_path(char *path)
 {
     struct stat statbuf;
 
+    printf("access\n");
     if (access(path, W_OK | R_OK) != SUCCESS)
         return (FAILURE);
+    printf("stat\n");
     if (stat(path, &statbuf) != 0)
         return (FAILURE);
-    if (S_ISDIR(statbuf.st_mode))
+    printf("is reg file ?\n");
+    if (S_ISREG(statbuf.st_mode))
         return (SUCCESS);
+    printf("no\n");
     return (FAILURE);
 }
 
@@ -53,39 +58,42 @@ static char *do_path_check(list_socket_t *msocket, char *given_path)
     given_full = get_full_path(msocket, given_path);
     if (!given_full)
         return (NULL);
+    printf("full path: %s\n", given_full);
     if (check_exist_path(given_full) != SUCCESS) {
-        send_message(msocket, 550, "No such file or directory.");
+        send_message(msocket, 550, "No such file.");
         return (NULL);
     }
+    printf("exist\n");
     given_clean = absolute_path(given_full);
     if (!given_clean || !prefix(msocket->user->dirr_path, given_clean)) {
-        send_message(msocket, 550, "No such file or directory.");
+        send_message(msocket, 550, "No such file.");
         return (NULL);
     }
+    printf("absolute path: %s\n", given_clean);
     free(given_full);
     return (given_clean);
 }
 
-static char *add_last_slash(list_socket_t *msocket, char *path)
+static int delete_file(list_socket_t *msocket, char *filepath)
 {
-    if (path[0] == '\0')
-        path = add_slash(msocket, path);
-    return (path);
+    if (remove(filepath) != 0) {
+        send_message(msocket, 550, "File coundn't be removed");
+        perror("delete_file");
+        return (FAILURE);
+    }
+    return (SUCCESS);
 }
 
-int cmd_cwd(server_t *server, list_socket_t *msocket, char **args)
+int cmd_dele(server_t *server, list_socket_t *msocket, char **args)
 {
     char *full_path;
-    char *little_path;
 
     if (check_args(msocket, args, 2, true) != SUCCESS)
         return (SUCCESS);
     full_path = do_path_check(msocket, args[1]);
-    if (!full_path)
+    printf("to delete: %s\n", full_path);
+    if (!full_path || delete_file(msocket, full_path) != SUCCESS)
         return (SUCCESS);
-    little_path = full_path + strlen(msocket->user->dirr_path);
-    free(msocket->dirr_path);
-    msocket->dirr_path = add_last_slash(msocket, strdup(little_path));
     send_message(msocket, 250, "Okay.");
     free(full_path);
     return (SUCCESS);

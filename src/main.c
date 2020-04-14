@@ -29,7 +29,7 @@ int check_given_path(char *path)
 {
     struct stat statbuf;
 
-    if (access(path, W_OK | R_OK | X_OK) != SUCCESS) {
+    if (access(path, W_OK | R_OK) != SUCCESS) {
         perror("Given default path");
         return (FAILURE);
     }

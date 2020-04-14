@@ -16,6 +16,8 @@ int cmd_pass(server_t *server, list_socket_t *msocket, char **args);
 int cmd_pwd(server_t *server, list_socket_t *msocket, char **args);
 int cmd_cwd(server_t *server, list_socket_t *msocket, char **args);
 int cmd_cdup(server_t *server, list_socket_t *msocket, char **args);
+int cmd_quit(server_t *server, list_socket_t *msocket, char **args);
+int cmd_dele(server_t *server, list_socket_t *msocket, char **args);
 
 static const char *COMMAND_STR[] = {
     "USER",
@@ -24,9 +26,9 @@ static const char *COMMAND_STR[] = {
     "PWD",
     "CWD",
     "CDUP",
-    /*"QUIT",
+    "QUIT",
     "DELE",
-    "PASV",
+    /*"PASV",
     "PORT",
     "HELP",
     "NOOP",
@@ -42,7 +44,9 @@ static const int (*COMMAND_CMD[])
     cmd_pass,
     cmd_pwd,
     cmd_cwd,
-    cmd_cdup
+    cmd_cdup,
+    cmd_quit,
+    cmd_dele
 };
 
 #endif /* !FTP_COMMANDS_H_ */

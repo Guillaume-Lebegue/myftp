@@ -26,5 +26,6 @@ static const char INFO_SERVER_LISTEN[] = "Server now listening";
 static const char INFO_SERVER_CLOSE[] = "Server now closing";
 
 static const char WELCOME_MESSAGE[] = "Welcome on myftp";
+static const char BYE_MESSAGE[] = "Bye.";
 
 #endif /* !FTP_MESSAGE_H_ */
