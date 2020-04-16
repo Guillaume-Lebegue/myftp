@@ -45,7 +45,8 @@ char *remove_last_char(char *str)
         return (NULL);
     if (str[0] == '\0')
         return (str);
-    str[strlen(str) - 1] = '\0';
+    if (str[strlen(str) - 1] == '\r')
+        str[strlen(str) - 1] = '\0';
     return (str);
 }
 

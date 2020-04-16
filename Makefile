@@ -24,7 +24,8 @@ SRC	=	src/main.c				\
 		src/command/cwd.c		\
 		src/command/cdup.c		\
 		src/command/quit.c		\
-		src/command/dele.c
+		src/command/dele.c		\
+		src/command/noop.c
 
 OBJ	=	$(SRC:.c=.o)
 

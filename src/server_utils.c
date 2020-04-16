@@ -75,13 +75,13 @@ void do_disconnect(server_t *server, list_socket_t *deco_sock)
 int send_message(list_socket_t *socket, const int code, const char *msg)
 {
     char *res;
-    int len = 3 + strlen(msg);
+    int len = 2 + strlen(msg);
 
     for (int i = 1; code / i; i *= 10, len++);
     res = malloc(sizeof(char) * len);
     if (!res)
         return (FAILURE);
-    sprintf(res, "%d %s\n", code, msg);
+    sprintf(res, "%d %s", code, msg);
     write(socket->fd, res, len);
     free(res);
     return (SUCCESS);

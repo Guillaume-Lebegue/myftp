@@ -25,6 +25,7 @@ static int select_action(server_t *server, list_socket_t *msocket, char **args)
 int new_message(server_t *server, list_socket_t *msocket)
 {
     char *mess = remove_last_char(read_from_fd(msocket->fp, 10));
+    printf("message: %s\n", mess);
     char **args = (!mess || mess[0] == '\0') ? NULL : strtotab(mess, ' ');
     int ret = SUCCESS;
 
