@@ -44,6 +44,7 @@ typedef struct list_socket_s{
     user_t *user;
     bool connected;
     int fd;
+    int datafd;
     socket_type_t type;
 } list_socket_t;
 

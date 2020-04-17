@@ -13,7 +13,7 @@
 static int init_server(short port, char *d_path, server_t *server, int *stop)
 {
     server->users = malloc(sizeof(user_t *) * 2);
-    server->users[0] = create_user("anonymous", "", d_path, USER);
+    server->users[0] = create_user("Anonymous", "", d_path, USER);
     server->users[1] = NULL;
     server->list_socket = create_node_socket(start_socket(), SERVER);
     if (server->list_socket->fd == (-FAILURE) || !server->users[0] ||

@@ -25,7 +25,8 @@ SRC	=	src/main.c				\
 		src/command/cdup.c		\
 		src/command/quit.c		\
 		src/command/dele.c		\
-		src/command/noop.c
+		src/command/noop.c		\
+		src/command/pasv.c
 
 OBJ	=	$(SRC:.c=.o)
 
@@ -33,7 +34,7 @@ HEADER_PATH	=	include/
 
 CC	=	@gcc
 
-CFLAGS	=	-I $(HEADER_PATH) -Wall -Werror
+CFLAGS	=	-I $(HEADER_PATH) -Wall -Werror -g3
 
 NAME	=	myftp
 
