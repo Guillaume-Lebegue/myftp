@@ -21,6 +21,7 @@ list_socket_t *create_node_socket(int fd, socket_type_t type)
     new->address = NULL;
     new->fd = fd;
     new->datafd = -1;
+    new->listenfd = -1;
     new->fp = fdopen(fd, "r+");
     if (!new->fp || !new->dirr_path) {
         perror("Create node socket");
@@ -52,8 +53,10 @@ static void free_one_socket(list_socket_t *sock)
 {
     close(sock->fd);
     fclose(sock->fp);
-    if (sock->datafd > 0)
+    if (sock->datafd >= 0)
         close(sock->datafd);
+    if (sock->listenfd >= 0)
+        close(sock->listenfd);
     if (sock->address)
         free(sock->address);
     free(sock->dirr_path);

@@ -57,6 +57,8 @@ static void do_update(server_t *server, fd_set *updated)
         if (FD_ISSET(tmp->fd, updated))
             if (run_update(server, tmp) != SUCCESS)
                 return;
+        if (FD_ISSET(tmp->listenfd, updated))
+            data_connect(tmp);
     }
 }
 

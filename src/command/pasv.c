@@ -23,73 +23,90 @@
 static int create_new_sock(list_socket_t *msocket)
 {
     struct sockaddr_in conf = {AF_INET, htons(0), INADDR_ANY};
+    int listen_fd;
 
-    msocket->datafd = start_socket();
-    if (msocket->datafd == (-FAILURE))
-        return (FAILURE);
-    if (bind(msocket->datafd, (struct sockaddr *) &conf,
-            sizeof(struct sockaddr_in)) == -1) {
+    listen_fd = start_socket();
+    if (listen_fd == (-FAILURE))
+        return (listen_fd);
+    if (bind(listen_fd, (struct sockaddr *) &conf,
+            sizeof(struct sockaddr_in)) == -1 ||
+            listen(listen_fd, 1)) {
         error_malloc(msocket, "bind_socket for data");
-        return (FAILURE);
+        return (-FAILURE);
     }
-    return (SUCCESS);
+    return (listen_fd);
 }
 
 #pragma GCC diagnostic pop
 
-static char *get_add_format(list_socket_t *msocket, struct sockaddr_in *conf)
+static char *get_add_format(list_socket_t *msocket, int listen_fd)
 {
-    char *full_addr;
+    char *full_addr = get_remote_addr(msocket->fd);
     char *sep_addr[4];
-    int port = ntohs(conf->sin_port);
+    int port = get_local_port(listen_fd);
     char *res = malloc(sizeof(char) * (36 + 7));
-    int p1 = port >> 8;
-    int p2 = port - (p1 * 256);
 
-    if (!res) {
-        error_malloc(msocket, "get format for pasv");
+    if (!full_addr || port == -FAILURE || !res) {
+        error_malloc(msocket, "get_add_format");
         return (NULL);
     }
-    full_addr = inet_ntoa(conf->sin_addr);
     for (int i = 0; i != 4; i++)
         sep_addr[i] = strtok(i == 0 ? full_addr : NULL, ".");
     sprintf(res, "=%s,%s,%s,%s,%d,%d", sep_addr[0], sep_addr[1], sep_addr[2],
-        sep_addr[3], p1, p2);
+        sep_addr[3], port / 256, port % 256);
+    free(full_addr);
     return (res);
 }
 
-void data_log(struct sockaddr_in *conf)
+static int send_add(list_socket_t *msocket, int listen_fd)
 {
-    char *add;
+    char *msg;
+
+    msg = get_add_format(msocket, listen_fd);
+    if (!msg)
+        return (FAILURE);
+    send_message(msocket, 227, msg);
+    free(msg);
+    return (SUCCESS);
+}
+
+int data_connect(list_socket_t *msocket)
+{
+    struct sockaddr_in res_conf;
+    uint addr_len = sizeof(struct sockaddr_in);
     char str[50];
 
-    sprintf(str, "%s:%i", inet_ntoa(conf->sin_addr),
-        ntohs(conf->sin_port));
-    add = strdup(str);
-    sprintf(str, "Pasive data oppened on: %s", add);
+    msocket->datafd = accept(msocket->listenfd,
+        (struct sockaddr *) &res_conf, &addr_len);
+    if (msocket->datafd == -1) {
+        error_malloc(msocket, "data_connect");
+        return (FAILURE);
+    }
+    sprintf(str, "Data connection from: %s:%i", inet_ntoa(res_conf.sin_addr),
+        ntohs(res_conf.sin_port));
     server_log(str);
-    free(add);
+    close(msocket->listenfd);
+    msocket->listenfd = -1;
+    return (SUCCESS);
 }
 
 int cmd_pasv(server_t *server, list_socket_t *msocket, char **args)
 {
-    char *msg;
-    struct sockaddr_in conf;
-    uint confl = sizeof(struct sockaddr_in);
+    int listen_fd;
 
     if (check_args(msocket, args, 1, true) != SUCCESS)
         return (SUCCESS);
-    if (create_new_sock(msocket) != SUCCESS)
+    if (msocket->datafd != -1) {
+        close(msocket->datafd);
+        msocket->datafd = -1;
+    }
+    listen_fd = create_new_sock(msocket);
+    if (listen_fd == -FAILURE)
         return (SUCCESS);
-    if (getsockname(msocket->datafd, (struct sockaddr *) &conf, &confl) != 0) {
-        error_malloc(msocket, "cmd_pasv");
+    if (send_add(msocket, listen_fd) != SUCCESS) {
+        close(listen_fd);
         return (SUCCESS);
     }
-    msg = get_add_format(msocket, &conf);
-    if (!msg)
-        return (SUCCESS);
-    send_message(msocket, 227, msg);
-    data_log(&conf);
-    free(msg);
+    msocket->listenfd = listen_fd;
     return (SUCCESS);
 }

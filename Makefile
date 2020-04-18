@@ -16,6 +16,7 @@ SRC	=	src/main.c				\
 		src/string_utils.c		\
 		src/string_utils2.c		\
 		src/users_utils.c		\
+		src/get_sock_addr.c		\
 		src/command_utils.c		\
 		src/command/user.c		\
 		src/command/syst.c		\

@@ -23,6 +23,10 @@ int set_rfd_set(int max, fd_set *set, list_socket_t *list)
             continue;
         FD_SET(tmp->fd, set);
         max = max <= tmp->fd ? tmp->fd + 1 : max;
+        if (tmp->listenfd != -1) {
+            FD_SET(tmp->listenfd, set);
+            max = max <= tmp->listenfd ? tmp->listenfd + 1 : max;
+        }
     }
     return (max);
 }

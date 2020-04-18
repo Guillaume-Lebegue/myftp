@@ -45,6 +45,7 @@ typedef struct list_socket_s{
     bool connected;
     int fd;
     int datafd;
+    int listenfd;
     socket_type_t type;
 } list_socket_t;
 
@@ -74,6 +75,9 @@ int start_listen(int sfd);
 
 int setup_catcher(int *stop);
 
+char *get_remote_addr(int socket_fd);
+unsigned short get_local_port(int socket_fd);
+
 int count_occ(char *str, char search);
 char **strtotab(char *str, char delim);
 char *remove_last_char(char *str);
@@ -90,5 +94,7 @@ void free_list_user(user_t **users);
 
 int check_args(list_socket_t *msocket, char **args, int num_arg, bool logged);
 int error_malloc(list_socket_t *msocket, char *msg);
+
+int data_connect(list_socket_t *msocket);
 
 #endif /* !MYFTP_H_ */
