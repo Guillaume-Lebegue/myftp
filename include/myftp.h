@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 static const int SUCCESS = 0;
 static const int FAILURE = 84;
@@ -42,6 +44,7 @@ typedef struct list_socket_s{
     FILE *fp;
     char *address;
     user_t *user;
+    struct sockaddr_in *data_info;
     bool connected;
     int fd;
     int datafd;

@@ -13,19 +13,19 @@
 #include "myftp.h"
 #include "ftp_message.h"
 
-void help(void)
+static void help(void)
 {
     puts("USAGE: ./myftp port path");
     puts("\tport is the port number on wich the server socket listens");
     puts("\tpath is the path to the home directory for the Anonymous user");
 }
 
-void wrong_use(void)
+static void wrong_use(void)
 {
     puts("Wrong use. see help with: './myftp -help'");
 }
 
-int check_given_path(char *path)
+static int check_given_path(char *path)
 {
     struct stat statbuf;
 
@@ -43,7 +43,7 @@ int check_given_path(char *path)
     return (FAILURE);
 }
 
-int get_port(short *port, char *given_port)
+static int get_port(short *port, char *given_port)
 {
     char *endptr = "\0";
 
