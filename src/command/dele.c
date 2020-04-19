@@ -37,16 +37,12 @@ static int check_exist_path(char *path)
 {
     struct stat statbuf;
 
-    printf("access\n");
     if (access(path, W_OK | R_OK) != SUCCESS)
         return (FAILURE);
-    printf("stat\n");
     if (stat(path, &statbuf) != 0)
         return (FAILURE);
-    printf("is reg file ?\n");
     if (S_ISREG(statbuf.st_mode))
         return (SUCCESS);
-    printf("no\n");
     return (FAILURE);
 }
 
@@ -58,18 +54,15 @@ static char *do_path_check(list_socket_t *msocket, char *given_path)
     given_full = get_full_path(msocket, given_path);
     if (!given_full)
         return (NULL);
-    printf("full path: %s\n", given_full);
     if (check_exist_path(given_full) != SUCCESS) {
         send_message(msocket, 550, "No such file.");
         return (NULL);
     }
-    printf("exist\n");
     given_clean = absolute_path(given_full);
     if (!given_clean || !prefix(msocket->user->dirr_path, given_clean)) {
         send_message(msocket, 550, "No such file.");
         return (NULL);
     }
-    printf("absolute path: %s\n", given_clean);
     free(given_full);
     return (given_clean);
 }
@@ -91,7 +84,6 @@ int cmd_dele(server_t *server, list_socket_t *msocket, char **args)
     if (check_args(msocket, args, 2, true) != SUCCESS)
         return (SUCCESS);
     full_path = do_path_check(msocket, args[1]);
-    printf("to delete: %s\n", full_path);
     if (!full_path || delete_file(msocket, full_path) != SUCCESS)
         return (SUCCESS);
     send_message(msocket, 250, "Okay.");

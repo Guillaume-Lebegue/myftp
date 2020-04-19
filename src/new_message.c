@@ -16,6 +16,10 @@ static int select_action(server_t *server, list_socket_t *msocket, char **args)
     int pos = search_in_list(COMMAND_STR, args[0]);
 
     if (pos == -1) {
+        send_message(msocket, 500, "Command unrecognized.");
+        return (FAILURE);
+    }
+    if (pos > MAX_CMD_INDEX) {
         send_message(msocket, 502, "Command not implemented.");
         return (FAILURE);
     }
@@ -25,7 +29,6 @@ static int select_action(server_t *server, list_socket_t *msocket, char **args)
 int new_message(server_t *server, list_socket_t *msocket)
 {
     char *mess = remove_last_char(read_from_fd(msocket->fp, 10));
-    printf("message: %s\n", mess);
     char **args = (!mess || mess[0] == '\0') ? NULL : strtotab(mess, ' ');
     int ret = SUCCESS;
 

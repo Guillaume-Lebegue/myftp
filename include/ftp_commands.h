@@ -34,10 +34,10 @@ static const char *COMMAND_STR[] = {
     "NOOP",
     "PASV",
     "PORT",
-    /*"HELP",
+    "HELP",
     "RETR",
     "STOR",
-    "LIST" */
+    "LIST"
 };
 
 static const int (*COMMAND_CMD[])
@@ -52,7 +52,13 @@ static const int (*COMMAND_CMD[])
     cmd_dele,
     cmd_noop,
     cmd_pasv,
-    cmd_port
+    cmd_port,
+    NULL,
+    NULL,
+    NULL,
+    NULL
 };
+
+static const int MAX_CMD_INDEX = 10;
 
 #endif /* !FTP_COMMANDS_H_ */

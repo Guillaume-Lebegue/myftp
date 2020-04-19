@@ -54,6 +54,8 @@ int search_in_list(const char **tab, char *search)
 {
     int pos;
 
+    if (!search)
+        return (-1);
     for (pos = 0; tab[pos]; pos++) {
         if (strcmp(tab[pos], search) == 0)
             break;
